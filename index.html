@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StudyFlow: organize tarefas, matérias e sessões de estudo.">
+  <title>StudyFlow — Organizador de Estudos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" aria-label="StudyFlow, início">
+        <span class="brand-mark">S</span><span>Study<span class="brand-accent">Flow</span></span>
+      </a>
+      <p class="nav-caption">MENU PRINCIPAL</p>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#dashboard" class="nav-link active" data-view="dashboard"><span>⌂</span> Visão geral</a>
+        <a href="#tarefas" class="nav-link" data-view="tarefas"><span>☷</span> Minhas tarefas</a>
+        <a href="#calendario" class="nav-link" data-view="calendario"><span>▦</span> Calendário</a>
+        <a href="#cronometro" class="nav-link" data-view="cronometro"><span>◷</span> Foco Pomodoro</a>
+        <a href="#materias" class="nav-link" data-view="materias"><span>▤</span> Matérias</a>
+        <a href="#progresso" class="nav-link" data-view="progresso"><span>↗</span> Meu progresso</a>
+      </nav>
+      <div class="sidebar-note">
+        <div class="note-icon">✦</div>
+        <strong>Um passo de cada vez.</strong>
+        <p>Pequenos momentos de foco constroem grandes resultados.</p>
+      </div>
+      <div class="profile">
+        <div class="avatar">E</div>
+        <div><strong>Estudante</strong><small>Sua área de estudos</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">S</span> StudyFlow</div>
+        <div class="breadcrumb">Seu espaço de estudos <span>/</span> <strong id="crumb">Visão geral</strong></div>
+        <button class="button button-primary" id="quickAddBtn">＋ Nova tarefa</button>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="welcome-row">
+          <div><p class="eyebrow" id="todayLabel">SEU PLANEJAMENTO</p><h1>Olá, estudante! <span class="wave">✦</span></h1>
+            <p class="muted">Organize seu dia e avance no seu ritmo.</p></div>
+          <div class="date-chip"><span>◷</span><span id="todayDate"></span></div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-icon blue">☷</div><span class="stat-label">Tarefas pendentes</span><strong id="pendingCount">0</strong><small>Atividades para concluir</small></article>
+          <article class="stat-card"><div class="stat-icon green">✓</div><span class="stat-label">Concluídas</span><strong id="completedCount">0</strong><small>Você está avançando!</small></article>
+          <article class="stat-card"><div class="stat-icon purple">▦</div><span class="stat-label">Próximos compromissos</span><strong id="upcomingCount">0</strong><small>Provas, trabalhos e eventos</small></article>
+          <article class="stat-card progress-stat"><div class="stat-top"><span class="stat-label">Progresso geral</span><span class="progress-emoji">✧</span></div><strong id="progressPercent">0%</strong><div class="progress-track"><div id="progressBar" class="progress-fill"></div></div><small id="progressCaption">Vamos começar?</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-heading"><div><h2>Próximas tarefas</h2><p class="muted">O que merece sua atenção primeiro</p></div><a href="#tarefas" class="text-link" data-view="tarefas">Ver todas →</a></div>
+            <div id="dashboardTasks" class="task-preview-list"></div>
+          </article>
+          <article class="panel focus-panel">
+            <div class="panel-heading"><div><h2>Hora de focar</h2><p class="muted">Uma sessão de cada vez</p></div><span class="soft-icon">◷</span></div>
+            <div class="focus-circle"><div><strong>25:00</strong><span>minutos de foco</span></div></div>
+            <p class="focus-copy">Afaste as distrações e dedique este tempo a você.</p>
+            <button class="button button-primary full-width" data-view="cronometro">Começar sessão <span>→</span></button>
+          </article>
+        </div>
+        <article class="panel week-panel">
+          <div class="panel-heading"><div><h2>Seu ritmo nesta semana</h2><p class="muted">Tarefas concluídas por dia</p></div><span class="week-tag">Últimos 7 dias</span></div>
+          <div id="weeklyChart" class="weekly-chart" aria-label="Gráfico de tarefas concluídas na última semana"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-tarefas">
+        <div class="page-heading"><div><p class="eyebrow">ORGANIZE E REALIZE</p><h1>Minhas tarefas</h1><p class="muted">Tudo o que você precisa fazer, em um só lugar.</p></div><button class="button button-primary" id="addTaskBtn">＋ Adicionar tarefa</button></div>
+        <article class="panel">
+          <form id="filterForm" class="filters">
+            <label>Matéria<select id="filterSubject"><option value="">Todas as matérias</option></select></label>
+            <label>Prioridade<select id="filterPriority"><option value="">Todas</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select></label>
+            <label>Situação<select id="filterStatus"><option value="ativas">Pendentes</option><option value="todas">Todas</option><option value="concluidas">Concluídas</option></select></label>
+          </form>
+          <div id="taskList" class="task-list"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-calendario">
+        <div class="page-heading"><div><p class="eyebrow">OLHE PARA FRENTE</p><h1>Calendário</h1><p class="muted">Planeje provas, trabalhos e compromissos.</p></div><button class="button button-primary" id="addEventBtn">＋ Novo compromisso</button></div>
+        <article class="panel calendar-panel">
+          <div class="calendar-header"><button class="icon-button" id="prevMonth" aria-label="Mês anterior">‹</button><h2 id="calendarMonth"></h2><button class="icon-button" id="nextMonth" aria-label="Próximo mês">›</button><button class="button button-light" id="todayBtn">Hoje</button></div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="calendar-legend"><span><i class="legend-dot blue-dot"></i> Prova</span><span><i class="legend-dot purple-dot"></i> Trabalho</span><span><i class="legend-dot green-dot"></i> Atividade</span><span><i class="legend-dot gray-dot"></i> Outro</span></div>
+        </article>
+        <article class="panel day-events"><div class="panel-heading"><div><h2 id="selectedDateTitle">Compromissos do dia</h2><p class="muted">Selecione uma data no calendário</p></div></div><div id="dayEventList"></div></article>
+      </section>
+
+      <section class="view" id="view-cronometro">
+        <div class="page-heading"><div><p class="eyebrow">MENOS DISTRAÇÕES, MAIS FOCO</p><h1>Foco Pomodoro</h1><p class="muted">Estude com intenção e faça pausas para respirar.</p></div></div>
+        <div class="pomodoro-layout">
+          <article class="panel timer-panel">
+            <div class="timer-tabs"><button class="timer-tab active" data-mode="study">Foco · 25 min</button><button class="timer-tab" data-mode="break">Pausa · 5 min</button></div>
+            <div class="timer-ring" id="timerRing"><div><strong id="timerDisplay">25:00</strong><span id="timerModeLabel">Hora de focar</span></div></div>
+            <div class="timer-actions"><button class="button button-primary" id="timerStart">▶ Iniciar</button><button class="button button-light" id="timerReset">↺ Reiniciar</button></div>
+            <p class="muted timer-hint" id="timerHint" aria-live="polite">Seu próximo passo começa agora.</p>
+          </article>
+          <article class="panel sessions-panel"><div class="panel-heading"><div><h2>Suas sessões</h2><p class="muted">Sessões de foco concluídas neste dispositivo</p></div><span class="soft-icon">✧</span></div><div class="session-total"><strong id="sessionCount">0</strong><span>sessões concluídas</span></div><div class="session-time"><span>Tempo de foco registrado</span><strong id="focusTimeTotal">0 min</strong></div><div id="sessionHistory" class="session-history"></div></article>
+        </div>
+      </section>
+
+      <section class="view" id="view-materias">
+        <div class="page-heading"><div><p class="eyebrow">CADA ASSUNTO NO SEU LUGAR</p><h1>Minhas matérias</h1><p class="muted">Acompanhe as atividades de cada disciplina.</p></div></div>
+        <form id="subjectForm" class="panel subject-form"><label for="subjectName">Adicionar matéria</label><div class="inline-form"><input id="subjectName" name="subjectName" maxlength="40" placeholder="Ex.: Química" required><button class="button button-primary" type="submit">＋ Adicionar</button></div></form>
+        <div id="subjectGrid" class="subject-grid"></div>
+      </section>
+
+      <section class="view" id="view-progresso">
+        <div class="page-heading"><div><p class="eyebrow">OLHE O QUANTO VOCÊ AVANÇOU</p><h1>Meu progresso</h1><p class="muted">Consistência vale mais do que perfeição.</p></div></div>
+        <div class="stats-grid progress-overview">
+          <article class="stat-card"><div class="stat-icon green">✓</div><span class="stat-label">Tarefas concluídas</span><strong id="progressDone">0</strong><small>Registradas por você</small></article>
+          <article class="stat-card"><div class="stat-icon purple">◷</div><span class="stat-label">Tempo de foco</span><strong id="progressMinutes">0 min</strong><small>Em sessões completas</small></article>
+          <article class="stat-card"><div class="stat-icon blue">✧</div><span class="stat-label">Taxa de conclusão</span><strong id="completionRate">0%</strong><small>Concluídas sobre o total</small></article>
+        </div>
+        <article class="panel"><div class="panel-heading"><div><h2>Atividade semanal</h2><p class="muted">Tarefas marcadas como concluídas por dia</p></div></div><div id="progressChart" class="weekly-chart large-chart"></div></article>
+        <article class="panel"><div class="panel-heading"><div><h2>Resumo por matéria</h2><p class="muted">Tarefas pendentes e concluídas</p></div></div><div id="subjectProgress" class="subject-progress-list"></div></article>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Navegação móvel">
+    <a href="#dashboard" class="active" data-view="dashboard"><span>⌂</span><small>Início</small></a>
+    <a href="#tarefas" data-view="tarefas"><span>☷</span><small>Tarefas</small></a>
+    <a href="#calendario" data-view="calendario"><span>▦</span><small>Agenda</small></a>
+    <a href="#cronometro" data-view="cronometro"><span>◷</span><small>Foco</small></a>
+    <a href="#materias" data-view="materias"><span>▤</span><small>Matérias</small></a>
+    <a href="#progresso" data-view="progresso"><span>↗</span><small>Progresso</small></a>
+  </nav>
+
+  <!-- Modal acessível para criar/editar tarefas e compromissos. -->
+  <dialog id="taskDialog" class="modal">
+    <form id="taskForm" class="modal-form">
+      <div class="modal-heading"><div><p class="eyebrow">PLANEJAMENTO</p><h2 id="taskDialogTitle">Nova tarefa</h2></div><button type="button" class="icon-button close-dialog" aria-label="Fechar">×</button></div>
+      <input type="hidden" id="taskId">
+      <label for="taskTitle">Título <span>*</span></label><input id="taskTitle" maxlength="100" required placeholder="Ex.: Revisar exercícios">
+      <label for="taskDescription">Descrição</label><textarea id="taskDescription" rows="3" maxlength="500" placeholder="Anotações ou detalhes (opcional)"></textarea>
+      <div class="form-row"><div><label for="taskSubject">Matéria <span>*</span></label><select id="taskSubject" required></select></div><div><label for="taskDue">Data de entrega <span>*</span></label><input id="taskDue" type="date" required></div></div>
+      <label for="taskPriority">Prioridade</label><select id="taskPriority"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select>
+      <div class="modal-actions"><button type="button" class="button button-light close-dialog">Cancelar</button><button type="submit" class="button button-primary">Salvar tarefa</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="eventDialog" class="modal">
+    <form id="eventForm" class="modal-form">
+      <div class="modal-heading"><div><p class="eyebrow">AGENDA ESCOLAR</p><h2>Novo compromisso</h2></div><button type="button" class="icon-button close-dialog" aria-label="Fechar">×</button></div>
+      <label for="eventTitle">Título <span>*</span></label><input id="eventTitle" maxlength="100" required placeholder="Ex.: Prova de História">
+      <div class="form-row"><div><label for="eventType">Tipo</label><select id="eventType"><option value="prova">Prova</option><option value="trabalho">Trabalho</option><option value="atividade">Atividade</option><option value="outro">Outro</option></select></div><div><label for="eventDate">Data <span>*</span></label><input id="eventDate" type="date" required></div></div>
+      <label for="eventSubject">Matéria</label><select id="eventSubject"></select>
+      <label for="eventDescription">Observações</label><textarea id="eventDescription" rows="2" maxlength="300" placeholder="Opcional"></textarea>
+      <div class="modal-actions"><button type="button" class="button button-light close-dialog">Cancelar</button><button type="submit" class="button button-primary">Salvar compromisso</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
